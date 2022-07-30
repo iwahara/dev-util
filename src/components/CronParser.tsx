@@ -11,7 +11,6 @@ import {
   import {
     Editable,
     EditableInput,
-    EditableTextarea,
     EditablePreview,
   } from '@chakra-ui/react'
 
@@ -23,9 +22,7 @@ function CronParser(){
     const [cron, setCron] = useState(defaultCron);
 
     function commandCronFormatter(){
-        const now = new Date(targetDate.toLocaleString());
-        console.log(cron);
-        invoke<string[]>('command_cron_formatter',{msg:{cron:cron, now:now.toISOString(),count:5}}).then(message => {
+        invoke<string[]>('command_cron_formatter',{msg:{cron:cron, now:targetDate.toISOString(),count:5}}).then(message => {
             setNextList(message);
         }).catch(message => {
             console.error('command_cron_formatter', message);
@@ -39,11 +36,11 @@ function CronParser(){
                 <EditableInput />
             </Editable>
             <DateTimePicker onChange={setTargetDate} value={targetDate} disableClock={true} />
-            <Button onClick={commandCronFormatter} colorScheme='blue'>Click to execute simpleCommands</Button>
+            <Button onClick={commandCronFormatter} colorScheme='blue'>パースする</Button>
             <div>
                 <UnorderedList colorScheme='blue'>
-                    {nextList.map((next,i) => {
-                    return <ListItem>{next}</ListItem>
+                    {nextList.map((next:string,i:number) => {
+                    return <ListItem key={next}>{new Date(next).toLocaleString()}</ListItem>
                 })}
                 </UnorderedList>
             </div>

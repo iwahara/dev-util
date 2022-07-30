@@ -14,15 +14,25 @@ import {
     EditablePreview,
   } from '@chakra-ui/react'
 
+  import {
+    NumberInput,
+    NumberInputField,
+    NumberInputStepper,
+    NumberIncrementStepper,
+    NumberDecrementStepper,
+  } from '@chakra-ui/react'
+
 function CronParser(){
     const dummy :string[] = [];
     const defaultCron = "* * * * *";
+    const defaultCount = 5;
     const [nextList, setNextList] = useState(dummy);
     const [targetDate, setTargetDate] = useState(new Date());
     const [cron, setCron] = useState(defaultCron);
+    const [count, setCount] = useState(defaultCount)
 
     function commandCronFormatter(){
-        invoke<string[]>('command_cron_formatter',{msg:{cron:cron, now:targetDate.toISOString(),count:5}}).then(message => {
+        invoke<string[]>('command_cron_formatter',{msg:{cron:cron, now:targetDate.toISOString(),count:count}}).then(message => {
             setNextList(message);
         }).catch(message => {
             console.error('command_cron_formatter', message);
@@ -35,6 +45,13 @@ function CronParser(){
                 <EditablePreview />
                 <EditableInput />
             </Editable>
+            <NumberInput defaultValue={defaultCount} min={1} max={100} value={count} onChange={(_valueString,valueAsNumber) => setCount(valueAsNumber)} >
+                <NumberInputField />
+                <NumberInputStepper>
+                    <NumberIncrementStepper />
+                    <NumberDecrementStepper />
+                </NumberInputStepper>
+            </NumberInput>
             <DateTimePicker onChange={setTargetDate} value={targetDate} disableClock={true} />
             <Button onClick={commandCronFormatter} colorScheme='blue'>パースする</Button>
             <div>

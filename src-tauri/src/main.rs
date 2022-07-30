@@ -12,6 +12,7 @@ fn main() {
             command_with_message,
             command_with_object,
             command_with_error,
+            command_cron_formatter,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

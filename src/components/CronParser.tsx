@@ -8,11 +8,7 @@ import {
     UnorderedList,
   } from '@chakra-ui/react'
 
-  import {
-    Editable,
-    EditableInput,
-    EditablePreview,
-  } from '@chakra-ui/react'
+import { Input } from '@chakra-ui/react'
 
   import {
     NumberInput,
@@ -41,10 +37,8 @@ function CronParser(){
 
     return (
         <div>
-            <Editable colorScheme='blue' defaultValue={defaultCron} onChange={setCron}>
-                <EditablePreview />
-                <EditableInput />
-            </Editable>
+            <Input colorScheme='blue' defaultValue={defaultCron} onChange={(event) => setCron(event.target.value)}>
+            </Input>
             <NumberInput defaultValue={defaultCount} min={1} max={100} value={count} onChange={(_valueString,valueAsNumber) => setCount(valueAsNumber)} >
                 <NumberInputField />
                 <NumberInputStepper>

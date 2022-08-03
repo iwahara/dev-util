@@ -51,4 +51,13 @@ mod tests {
 
         assert_eq!(next, "2022-08-01T00:01:00+09:00");
     }
+
+    #[test]
+    fn test_run_success_jst() {
+        let req = CronParserRequest::new(&String::from("* 0 * * *"), &String::from("2022-08-01T00:00:00+09:00"));
+        let ret = parse(req);
+        let next = ret.unwrap().next;
+
+        assert_eq!(next, "2022-08-01T00:01:00+09:00");
+    }
 }

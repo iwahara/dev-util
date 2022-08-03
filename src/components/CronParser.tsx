@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { invoke } from '@tauri-apps/api/tauri';
 import { Button } from '@chakra-ui/react';
 import DateTimePicker from 'react-datetime-picker';
+import { formatISO } from 'date-fns'
+import { utcToZonedTime } from 'date-fns-tz'
+
 
 import {
     ListItem,
@@ -28,7 +31,9 @@ function CronParser(){
     const [count, setCount] = useState(defaultCount)
 
     function commandCronFormatter(){
-        invoke<string[]>('command_cron_formatter',{msg:{cron:cron, now:targetDate.toISOString(),count:count}}).then(message => {
+        const jstDate = utcToZonedTime(targetDate, 'Asia/Tokyo')
+        console.log(formatISO(jstDate));
+        invoke<string[]>('command_cron_formatter',{msg:{cron:cron, now:formatISO(jstDate),count:count}}).then(message => {
             setNextList(message);
         }).catch(message => {
             console.error('command_cron_formatter', message);

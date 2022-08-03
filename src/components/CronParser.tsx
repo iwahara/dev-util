@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { invoke } from '@tauri-apps/api/tauri';
 import { Button } from '@chakra-ui/react';
+import { Select } from '@chakra-ui/react'
+import { Stack, HStack, VStack } from '@chakra-ui/react'
 import DateTimePicker from 'react-datetime-picker';
 import { formatISO } from 'date-fns'
 import { utcToZonedTime } from 'date-fns-tz'
@@ -25,13 +27,16 @@ function CronParser(){
     const dummy :string[] = [];
     const defaultCron = "* * * * *";
     const defaultCount = 5;
+    const defaultTimeZone = "Asia/Tokyo";
     const [nextList, setNextList] = useState(dummy);
     const [targetDate, setTargetDate] = useState(new Date());
     const [cron, setCron] = useState(defaultCron);
     const [count, setCount] = useState(defaultCount)
+    const [timezone, setTimeZone] = useState(defaultTimeZone);
 
     function commandCronFormatter(){
-        const jstDate = utcToZonedTime(targetDate, 'Asia/Tokyo')
+        console.log(timezone);
+        const jstDate = utcToZonedTime(targetDate, timezone)
         console.log(formatISO(jstDate));
         invoke<string[]>('command_cron_formatter',{msg:{cron:cron, now:formatISO(jstDate),count:count}}).then(message => {
             setNextList(message);
@@ -42,8 +47,13 @@ function CronParser(){
 
     return (
         <div>
-            <Input colorScheme='blue' defaultValue={defaultCron} onChange={(event) => setCron(event.target.value)}>
-            </Input>
+            <HStack spacing='24px'>
+                <Input colorScheme='blue' defaultValue={defaultCron} onChange={(event) => setCron(event.target.value)}>
+                </Input>
+                <Select onChange={(event) => setTimeZone(event.target.value)}>
+                    <option value={defaultTimeZone}>{defaultTimeZone}</option>
+                </Select>
+            </HStack>
             <NumberInput defaultValue={defaultCount} min={1} max={100} value={count} onChange={(_valueString,valueAsNumber) => setCount(valueAsNumber)} >
                 <NumberInputField />
                 <NumberInputStepper>

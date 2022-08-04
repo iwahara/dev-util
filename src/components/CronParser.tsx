@@ -6,6 +6,7 @@ import { Stack, HStack, VStack } from '@chakra-ui/react'
 import DateTimePicker from 'react-datetime-picker';
 import { formatISO } from 'date-fns'
 import { utcToZonedTime } from 'date-fns-tz'
+import { zonedTimeToUtc } from 'date-fns-tz'
 
 
 import {
@@ -27,7 +28,7 @@ function CronParser(){
     const dummy :string[] = [];
     const defaultCron = "* * * * *";
     const defaultCount = 5;
-    const defaultTimeZone = "Asia/Tokyo";
+    const defaultTimeZone = "UTC";
     const [nextList, setNextList] = useState(dummy);
     const [targetDate, setTargetDate] = useState(new Date());
     const [cron, setCron] = useState(defaultCron);
@@ -35,10 +36,13 @@ function CronParser(){
     const [timezone, setTimeZone] = useState(defaultTimeZone);
 
     function commandCronFormatter(){
-        console.log(timezone);
-        const jstDate = utcToZonedTime(targetDate, timezone)
-        console.log(formatISO(jstDate));
-        invoke<string[]>('command_cron_formatter',{msg:{cron:cron, now:formatISO(jstDate),count:count}}).then(message => {
+        let strDate = formatISO(utcToZonedTime(targetDate, timezone));
+
+        if (timezone === "UTC") {
+            strDate = targetDate.toISOString();
+        }
+        
+        invoke<string[]>('command_cron_formatter',{msg:{cron:cron, now:strDate,count:count}}).then(message => {
             setNextList(message);
         }).catch(message => {
             console.error('command_cron_formatter', message);
@@ -52,6 +56,7 @@ function CronParser(){
                 </Input>
                 <Select onChange={(event) => setTimeZone(event.target.value)}>
                     <option value={defaultTimeZone}>{defaultTimeZone}</option>
+                    <option value='Asia/Tokyo'>Asia/Tokyo</option>
                 </Select>
             </HStack>
             <NumberInput defaultValue={defaultCount} min={1} max={100} value={count} onChange={(_valueString,valueAsNumber) => setCount(valueAsNumber)} >

@@ -6,7 +6,7 @@ import { Stack, HStack, VStack } from '@chakra-ui/react'
 import DateTimePicker from 'react-datetime-picker';
 import { formatISO } from 'date-fns'
 import { utcToZonedTime } from 'date-fns-tz'
-import { zonedTimeToUtc } from 'date-fns-tz'
+import { useToast } from '@chakra-ui/react'
 
 
 import {
@@ -34,8 +34,13 @@ function CronParser(){
     const [cron, setCron] = useState(defaultCron);
     const [count, setCount] = useState(defaultCount)
     const [timezone, setTimeZone] = useState(defaultTimeZone);
+    const [buttonDisabled, setButtonDisabled] = useState(false);
+
+    const toast = useToast()
 
     function commandCronFormatter(){
+        setNextList(dummy);
+        setButtonDisabled(true);
         let strDate = formatISO(utcToZonedTime(targetDate, timezone));
 
         if (timezone === "UTC") {
@@ -46,35 +51,46 @@ function CronParser(){
             setNextList(message);
         }).catch(message => {
             console.error('command_cron_formatter', message);
-        })
+            toast({
+                title: 'cronパースエラー',
+                description: message,
+                status: 'error',
+                duration: 5000,
+                isClosable: true,
+              })
+        }).finally(() =>{
+            setButtonDisabled(false);
+        });
     }
 
     return (
         <div>
-            <HStack spacing='24px'>
-                <Input colorScheme='blue' defaultValue={defaultCron} onChange={(event) => setCron(event.target.value)}>
-                </Input>
-                <Select onChange={(event) => setTimeZone(event.target.value)}>
-                    <option value={defaultTimeZone}>{defaultTimeZone}</option>
-                    <option value='Asia/Tokyo'>Asia/Tokyo</option>
-                </Select>
-            </HStack>
-            <NumberInput defaultValue={defaultCount} min={1} max={100} value={count} onChange={(_valueString,valueAsNumber) => setCount(valueAsNumber)} >
-                <NumberInputField />
-                <NumberInputStepper>
-                    <NumberIncrementStepper />
-                    <NumberDecrementStepper />
-                </NumberInputStepper>
-            </NumberInput>
-            <DateTimePicker onChange={setTargetDate} value={targetDate} disableClock={true} />
-            <Button onClick={commandCronFormatter} colorScheme='blue'>パースする</Button>
-            <div>
-                <UnorderedList colorScheme='blue'>
-                    {nextList.map((next:string,i:number) => {
-                    return <ListItem key={next}>{new Date(next).toLocaleString()}</ListItem>
-                })}
-                </UnorderedList>
-            </div>
+            <VStack align="left">
+                <HStack spacing='24px'>
+                    <Input colorScheme='blue' defaultValue={defaultCron} onChange={(event) => setCron(event.target.value)}>
+                    </Input>
+                    <Select onChange={(event) => setTimeZone(event.target.value)}>
+                        <option value={defaultTimeZone}>{defaultTimeZone}</option>
+                        <option value='Asia/Tokyo'>Asia/Tokyo</option>
+                    </Select>
+                </HStack>
+                <NumberInput defaultValue={defaultCount} min={1} max={100} value={count} onChange={(_valueString,valueAsNumber) => setCount(valueAsNumber)} >
+                    <NumberInputField />
+                    <NumberInputStepper>
+                        <NumberIncrementStepper />
+                        <NumberDecrementStepper />
+                    </NumberInputStepper>
+                </NumberInput>
+                <DateTimePicker onChange={setTargetDate} value={targetDate} disableClock={true} />
+                <Button onClick={commandCronFormatter} colorScheme='blue' disabled={buttonDisabled}>パースする</Button>
+                <div>
+                    <UnorderedList colorScheme='blue'>
+                        {nextList.map((next:string,i:number) => {
+                        return <ListItem key={next}>{new Date(next).toLocaleString()}</ListItem>
+                    })}
+                    </UnorderedList>
+                </div>
+            </VStack>
         </div>
     );
     

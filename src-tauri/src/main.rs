@@ -4,6 +4,7 @@ windows_subsystem = "windows"
 )]
 
 mod cron_formatter;
+mod cidr_analyzer;
 
 fn main() {
     tauri::Builder::default()
@@ -13,6 +14,7 @@ fn main() {
             command_with_object,
             command_with_error,
             command_cron_formatter,
+            command_cidr_analyzer,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
@@ -29,6 +31,7 @@ fn command_with_message(message: String) -> String {
 }
 
 use serde::{Serialize, Deserialize};
+use crate::cidr_analyzer::{CidrAnalyzerRequest, CidrAnalyzerResponse};
 use crate::cron_formatter::CronParserRequest;
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -85,6 +88,11 @@ async fn command_cron_formatter(msg: CronMessage) -> Result<Vec<String>, String>
         };
     }
     Ok(result)
+}
+
+#[tauri::command]
+async fn command_cidr_analyzer(req: CidrAnalyzerRequest) -> Result<CidrAnalyzerResponse, String> {
+    cidr_analyzer::parse(req)
 }
 
 #[cfg(test)]

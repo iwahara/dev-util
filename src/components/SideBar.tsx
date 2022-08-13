@@ -15,13 +15,17 @@ import {
   FlexProps,
 } from '@chakra-ui/react';
 import {
-    FiClock,
-  FiTrendingUp,
+  FiClock,
   FiCompass,
   FiStar,
   FiSettings,
   FiMenu,
 } from 'react-icons/fi';
+
+import{
+  FaNetworkWired
+} from 'react-icons/fa';
+
 import { IconType } from 'react-icons';
 
 type ReactText = string | number;
@@ -31,8 +35,8 @@ interface LinkItemProps {
   icon: IconType;
 }
 const LinkItems: Array<LinkItemProps> = [
-  { name: 'CronFormatter', icon: FiClock },
-  { name: 'Trending', icon: FiTrendingUp },
+  { name: 'Cron Formatter', icon: FiClock },
+  { name: 'CIDR Analyzer', icon: FaNetworkWired },
   { name: 'Explore', icon: FiCompass },
   { name: 'Favourites', icon: FiStar },
   { name: 'Settings', icon: FiSettings },

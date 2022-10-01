@@ -21,6 +21,7 @@ tauri = { version = "1.0.5", features = ["api-all"] }
 chrono = "^0.4"
 cron-parser = "*"
 ipnet = "2.5.0"
+jsonxf = "1.1"
 
 [features]
 # by default Tauri runs in production mode

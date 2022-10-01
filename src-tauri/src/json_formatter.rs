@@ -1,5 +1,4 @@
 use serde::{Serialize, Deserialize};
-use serde_json::Value;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct JsonFormatRequest {
@@ -18,16 +17,12 @@ pub struct JsonFormatResponse {
 }
 
 pub fn format(req: JsonFormatRequest) -> Result<JsonFormatResponse, String> {
-    let from_ret: Result<Value, serde_json::error::Error> = serde_json::from_str(req.json_str.as_str());
-    let j = match &from_ret {
+    let ret = jsonxf::pretty_print(req.json_str.as_str());
+    let formatted = match ret {
         Ok(v) => v,
-        Err(e) => return Err(format!("不正なJson文字列です。[{}]", e))
+        Err(e) => return Err(format!("不正なJsonです。[{}]", e))
     };
-    if j.is_array() {
-        return Ok(JsonFormatResponse { formatted_str: serde_json::to_string_pretty(j.as_array().unwrap()).unwrap() });
-    }
-
-    Ok(JsonFormatResponse { formatted_str: serde_json::to_string_pretty(j.as_object().unwrap()).unwrap() })
+    Ok(JsonFormatResponse { formatted_str: formatted })
 }
 
 #[cfg(test)]
@@ -40,7 +35,7 @@ mod tests {
         let req = JsonFormatRequest::new(data);
         let ret = format(req);
 
-        assert_eq!(ret.unwrap().formatted_str, "{\n  \"age\": 43,\n  \"name\": \"John Doe\"\n}");
+        assert_eq!(ret.unwrap().formatted_str, "{\n  \"name\": \"John Doe\",\n  \"age\": 43\n}");
     }
 
     #[test]
@@ -49,6 +44,6 @@ mod tests {
         let req = JsonFormatRequest::new(data);
         let ret = format(req);
 
-        assert_eq!(ret.unwrap().formatted_str, "[\n  {\n    \"age\": 43,\n    \"name\": \"John Doe\"\n  }\n]");
+        assert_eq!(ret.unwrap().formatted_str, "[\n  {\n    \"name\": \"John Doe\",\n    \"age\": 43\n  }\n]");
     }
 }

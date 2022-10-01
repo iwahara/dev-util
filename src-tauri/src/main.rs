@@ -5,6 +5,7 @@ windows_subsystem = "windows"
 
 mod cron_formatter;
 mod cidr_analyzer;
+mod json_formatter;
 
 fn main() {
     tauri::Builder::default()

@@ -16,6 +16,7 @@ fn main() {
             command_with_error,
             command_cron_formatter,
             command_cidr_analyzer,
+            command_json_formatter,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
@@ -34,6 +35,7 @@ fn command_with_message(message: String) -> String {
 use serde::{Serialize, Deserialize};
 use crate::cidr_analyzer::{CidrAnalyzerRequest, CidrAnalyzerResponse};
 use crate::cron_formatter::CronParserRequest;
+use crate::json_formatter::{JsonFormatRequest, JsonFormatResponse};
 
 #[derive(Debug, Serialize, Deserialize)]
 struct MyMessage {
@@ -94,6 +96,11 @@ async fn command_cron_formatter(msg: CronMessage) -> Result<Vec<String>, String>
 #[tauri::command]
 async fn command_cidr_analyzer(req: CidrAnalyzerRequest) -> Result<CidrAnalyzerResponse, String> {
     cidr_analyzer::parse(req)
+}
+
+#[tauri::command]
+async fn command_json_formatter(req: JsonFormatRequest) -> Result<JsonFormatResponse, String> {
+    json_formatter::format(req)
 }
 
 #[cfg(test)]

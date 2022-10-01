@@ -17,10 +17,12 @@ import {
 import { FiClock, FiCompass, FiStar, FiSettings, FiMenu } from "react-icons/fi";
 
 import { FaNetworkWired } from "react-icons/fa";
+import { VscJson } from "react-icons/vsc";
 
 import { IconType } from "react-icons";
 import CidrAnalyzer from "./CidrAnalyzer";
 import CronParser from "./CronParser";
+import JsonFormatter from "./JsonFormatter";
 
 type ReactText = string | number;
 
@@ -32,6 +34,7 @@ interface LinkItemProps {
 const LinkItems: Array<LinkItemProps> = [
   { name: "Cron Formatter", icon: FiClock, content: <CronParser /> },
   { name: "CIDR Analyzer", icon: FaNetworkWired, content: <CidrAnalyzer /> },
+  { name: "Json Formatter", icon: VscJson, content: <JsonFormatter /> },
 ];
 
 export default function SimpleSidebar() {

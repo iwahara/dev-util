@@ -1,7 +1,5 @@
 import {
-  HStack,
   VStack,
-  Input,
   InputGroup,
   InputRightAddon,
   NumberInput,
@@ -19,17 +17,9 @@ import {
   Tr,
   Th,
   Td,
-  TableCaption,
   TableContainer,
 } from "@chakra-ui/react";
 
-interface CidrAnalyzerRequest {
-  first_octet: Number;
-  second_octet: Number;
-  third_octet: Number;
-  fourth_octet: Number;
-  prefix_len: Number;
-}
 
 interface CidrAnalyzerResponse {
   formatted_ip: String;

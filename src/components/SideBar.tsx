@@ -14,7 +14,7 @@ import {
   BoxProps,
   FlexProps,
 } from "@chakra-ui/react";
-import { FiClock, FiCompass, FiStar, FiSettings, FiMenu } from "react-icons/fi";
+import { FiClock, FiMenu } from "react-icons/fi";
 
 import { FaNetworkWired } from "react-icons/fa";
 import { VscJson } from "react-icons/vsc";

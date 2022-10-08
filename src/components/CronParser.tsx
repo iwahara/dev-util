@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
 import { Button } from "@chakra-ui/react";
 import { Select } from "@chakra-ui/react";
-import { Stack, HStack, VStack } from "@chakra-ui/react";
+import { HStack, VStack } from "@chakra-ui/react";
 import DateTimePicker from "react-datetime-picker";
 import { formatISO } from "date-fns";
 import { utcToZonedTime } from "date-fns-tz";

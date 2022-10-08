@@ -3,9 +3,6 @@ import { invoke } from "@tauri-apps/api/tauri";
 import { useState } from "react";
 
 
-interface JsonFormatterRequest {
-  json_str: string;
-}
 interface JsonFormatterResponse {
   formatted_str: string;
 }

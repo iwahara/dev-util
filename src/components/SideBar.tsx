@@ -4,13 +4,15 @@ import {
   CloseButton,
   Flex,
   Icon,
-  useColorModeValue,
   Link,
+  useColorModeValue,
   Text,
   useDisclosure,
   BoxProps,
   FlexProps,
 } from "@chakra-ui/react";
+import { Link as ReactLink } from "react-router-dom";
+
 import { FiClock } from "react-icons/fi";
 
 import { FaNetworkWired } from "react-icons/fa";
@@ -27,36 +29,20 @@ interface LinkItemProps {
   name: string;
   icon: IconType;
   content: ReactNode;
+  linkTo:string;
 }
 const LinkItems: Array<LinkItemProps> = [
-  { name: "Cron Formatter", icon: FiClock, content: <CronParser /> },
-  { name: "CIDR Analyzer", icon: FaNetworkWired, content: <CidrAnalyzer /> },
-  { name: "Json Formatter", icon: VscJson, content: <JsonFormatter /> },
+  { name: "Cron Formatter", icon: FiClock, content: <CronParser />,linkTo:"/cron_parser/" },
+  { name: "CIDR Analyzer", icon: FaNetworkWired, content: <CidrAnalyzer />,linkTo:"/cidr_analyzer/" },
+  { name: "Json Formatter", icon: VscJson, content: <JsonFormatter /> ,linkTo:"/json_formatter/"},
 ];
-
-export default function SimpleSidebar() {
-  const { onClose } = useDisclosure();
-  const [child, setChild] = useState<ReactNode>();
-  return (
-    <Box minH="100vh" bg={useColorModeValue("blue.100", "blue.900")}>
-      <SidebarContent
-        onClose={() => onClose}
-        display={{ base: "none", md: "block" }}
-        setChild={setChild}
-      />
-      <Box ml={{ base: 0, md: 60 }} p="4">
-        {child}
-      </Box>
-    </Box>
-  );
-}
 
 interface SidebarProps extends BoxProps {
   onClose: () => void;
   setChild: (child: ReactNode) => void;
 }
 
-const SidebarContent = ({ onClose, setChild, ...rest }: SidebarProps) => {
+export const SidebarContent = ({ onClose, setChild, ...rest }: SidebarProps) => {
   return (
     <Box
       bg={useColorModeValue("white", "gray.900")}
@@ -77,6 +63,7 @@ const SidebarContent = ({ onClose, setChild, ...rest }: SidebarProps) => {
         <NavItem
           key={link.name}
           icon={link.icon}
+          linkTo={link.linkTo}
           onClick={() => setChild(link.content)}
         >
           {link.name}
@@ -89,11 +76,13 @@ const SidebarContent = ({ onClose, setChild, ...rest }: SidebarProps) => {
 interface NavItemProps extends FlexProps {
   icon: IconType;
   children: ReactText;
+  linkTo:string;
 }
-const NavItem = ({ icon, children, ...rest }: NavItemProps) => {
+const NavItem = ({ icon, children,linkTo, ...rest }: NavItemProps) => {
   return (
     <Link
-      href="#"
+      as={ReactLink}
+      to={linkTo}
       style={{ textDecoration: "none" }}
       _focus={{ boxShadow: "none" }}
     >

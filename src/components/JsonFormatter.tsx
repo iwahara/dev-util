@@ -1,6 +1,7 @@
-import { Button, Textarea, useToast, VStack } from "@chakra-ui/react";
+import { Box, Button, Textarea, useToast, VStack,useColorModeValue, useDisclosure } from "@chakra-ui/react";
 import { invoke } from "@tauri-apps/api/tauri";
 import { useState } from "react";
+import { SidebarContent } from "./SideBar";
 
 
 interface JsonFormatterResponse {
@@ -13,6 +14,7 @@ function JsonFormatter() {
   const [formatted, setFormatted] = useState("");
 
   const toast = useToast();
+  const { onClose } = useDisclosure();
 
   async function commandJsonFormat(){
     setButtonDisabled(true);
@@ -41,26 +43,36 @@ function JsonFormatter() {
   };
 
   return (
-    <div>
-      <VStack align="left">
-      <Textarea
-        placeholder='Json文字列を入力してください'
-        resize='vertical'
-        onChange={(event) => setJson(event.target.value)}
+    <Box minH="100vh" bg={useColorModeValue("blue.100", "blue.900")}>
+      <SidebarContent
+        onClose={() => onClose}
+        display={{ base: "none", md: "block" }}
+        setChild={() => {}}
       />
-      </VStack>
+      <Box ml={{ base: 0, md: 60 }} p="4">
+      <div>
+        <VStack align="left">
+        <Textarea
+          placeholder='Json文字列を入力してください'
+          resize='vertical'
+          onChange={(event) => setJson(event.target.value)}
+        />
+        </VStack>
 
-      <Button
-          onClick={commandJsonFormat}
-          colorScheme="blue"
-          disabled={buttonDisabled}
-        >フォーマット</Button>
-      <Textarea
-        isReadOnly
-        resize='vertical'
-        value={formatted}
-      />
-    </div>
+        <Button
+            onClick={commandJsonFormat}
+            colorScheme="blue"
+            disabled={buttonDisabled}
+          >フォーマット</Button>
+        <Textarea
+          isReadOnly
+          resize='vertical'
+          value={formatted}
+        />
+      </div>
+      </Box>
+    </Box>
+    
   );
 }
 export default JsonFormatter;

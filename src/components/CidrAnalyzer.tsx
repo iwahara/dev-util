@@ -6,6 +6,9 @@ import {
   NumberInputField,
   Button,
   useToast,
+  Box,
+  useColorModeValue,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
@@ -19,6 +22,7 @@ import {
   Td,
   TableContainer,
 } from "@chakra-ui/react";
+import { SidebarContent } from "./SideBar";
 
 
 interface CidrAnalyzerResponse {
@@ -42,6 +46,7 @@ function CidrAnalyzer() {
   const [response, setResponse] = useState<CidrAnalyzerResponse>();
 
   const toast = useToast();
+  const { onClose } = useDisclosure();
 
   function commandCidrAnalyzer() {
     setButtonDisabled(true);
@@ -76,6 +81,13 @@ function CidrAnalyzer() {
   }
 
   return (
+    <Box minH="100vh" bg={useColorModeValue("blue.100", "blue.900")}>
+          <SidebarContent
+            onClose={() => onClose}
+            display={{ base: "none", md: "block" }}
+            setChild={() => {}}
+          />
+          <Box ml={{ base: 0, md: 60 }} p="4">
     <div>
       <VStack align="left">
         <InputGroup>
@@ -184,6 +196,8 @@ function CidrAnalyzer() {
         )}
       </VStack>
     </div>
+    </Box>
+    </Box>
   );
 }
 export default CidrAnalyzer;

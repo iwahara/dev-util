@@ -56,10 +56,10 @@
     "windows": [
       {
         "fullscreen": false,
-        "height": 600,
+        "minHeight": 600,
         "resizable": true,
         "title": "Dev Util",
-        "width": 800
+        "minWidth": 800
       }
     ]
   }

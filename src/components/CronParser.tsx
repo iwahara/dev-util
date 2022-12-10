@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
-import { Button } from "@chakra-ui/react";
+import { Box, Button, useColorModeValue, useDisclosure } from "@chakra-ui/react";
 import { Select } from "@chakra-ui/react";
 import { HStack, VStack } from "@chakra-ui/react";
 import DateTimePicker from "react-datetime-picker";
@@ -19,6 +19,7 @@ import {
   NumberIncrementStepper,
   NumberDecrementStepper,
 } from "@chakra-ui/react";
+import { SidebarContent } from "./SideBar";
 
 function CronParser() {
   const dummy: string[] = [];
@@ -33,6 +34,7 @@ function CronParser() {
   const [buttonDisabled, setButtonDisabled] = useState(false);
 
   const toast = useToast();
+  const { onClose } = useDisclosure();
 
   function commandCronFormatter() {
     setNextList(dummy);
@@ -65,57 +67,67 @@ function CronParser() {
   }
 
   return (
-    <div>
-      <VStack align="left">
-        <HStack spacing="24px">
-          <Input
+    <Box minH="100vh" bg={useColorModeValue("blue.100", "blue.900")}>
+      <SidebarContent
+        onClose={() => onClose}
+        display={{ base: "none", md: "block" }}
+        setChild={() => {}}
+      />
+      <Box ml={{ base: 0, md: 60 }} p="4">
+      <div>
+        <VStack align="left">
+          <HStack spacing="24px">
+            <Input
+              colorScheme="blue"
+              defaultValue={defaultCron}
+              onChange={(event) => setCron(event.target.value)}
+            ></Input>
+            <Select onChange={(event) => setTimeZone(event.target.value)}>
+              <option value={defaultTimeZone}>{defaultTimeZone}</option>
+              <option value="Asia/Tokyo">Asia/Tokyo</option>
+            </Select>
+          </HStack>
+          <NumberInput
+            defaultValue={defaultCount}
+            min={1}
+            max={100}
+            value={count}
+            onChange={(_valueString, valueAsNumber) => setCount(valueAsNumber)}
+          >
+            <NumberInputField />
+            <NumberInputStepper>
+              <NumberIncrementStepper />
+              <NumberDecrementStepper />
+            </NumberInputStepper>
+          </NumberInput>
+          <DateTimePicker
+            onChange={setTargetDate}
+            value={targetDate}
+            disableClock={true}
+          />
+          <Button
+            onClick={commandCronFormatter}
             colorScheme="blue"
-            defaultValue={defaultCron}
-            onChange={(event) => setCron(event.target.value)}
-          ></Input>
-          <Select onChange={(event) => setTimeZone(event.target.value)}>
-            <option value={defaultTimeZone}>{defaultTimeZone}</option>
-            <option value="Asia/Tokyo">Asia/Tokyo</option>
-          </Select>
-        </HStack>
-        <NumberInput
-          defaultValue={defaultCount}
-          min={1}
-          max={100}
-          value={count}
-          onChange={(_valueString, valueAsNumber) => setCount(valueAsNumber)}
-        >
-          <NumberInputField />
-          <NumberInputStepper>
-            <NumberIncrementStepper />
-            <NumberDecrementStepper />
-          </NumberInputStepper>
-        </NumberInput>
-        <DateTimePicker
-          onChange={setTargetDate}
-          value={targetDate}
-          disableClock={true}
-        />
-        <Button
-          onClick={commandCronFormatter}
-          colorScheme="blue"
-          disabled={buttonDisabled}
-        >
-          パースする
-        </Button>
-        <div>
-          <UnorderedList colorScheme="blue">
-            {nextList.map((next: string, i: number) => {
-              return (
-                <ListItem key={next}>
-                  {new Date(next).toLocaleString()}
-                </ListItem>
-              );
-            })}
-          </UnorderedList>
-        </div>
-      </VStack>
-    </div>
+            disabled={buttonDisabled}
+          >
+            パースする
+          </Button>
+          <div>
+            <UnorderedList colorScheme="blue">
+              {nextList.map((next: string, i: number) => {
+                return (
+                  <ListItem key={next}>
+                    {new Date(next).toLocaleString()}
+                  </ListItem>
+                );
+              })}
+            </UnorderedList>
+          </div>
+        </VStack>
+      </div>
+    </Box>
+    </Box>
   );
 }
+
 export default CronParser;

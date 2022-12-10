@@ -5,11 +5,6 @@ pub struct JsonFormatRequest {
     json_str: String,
 }
 
-impl JsonFormatRequest {
-    pub fn new(json_str: &str) -> Self {
-        JsonFormatRequest { json_str: String::from(json_str) }
-    }
-}
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct JsonFormatResponse {
@@ -28,6 +23,12 @@ pub fn format(req: JsonFormatRequest) -> Result<JsonFormatResponse, String> {
 #[cfg(test)]
 mod tests {
     use crate::json_formatter::{format, JsonFormatRequest};
+
+    impl JsonFormatRequest {
+        pub fn new(json_str: &str) -> Self {
+            JsonFormatRequest { json_str: String::from(json_str) }
+        }
+    }
 
     #[test]
     fn test_run_root_object() {

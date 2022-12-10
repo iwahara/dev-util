@@ -1,5 +1,5 @@
 use std::net::Ipv4Addr;
-use ipnet::{Ipv4Net, PrefixLenError};
+use ipnet::{Ipv4Net};
 use serde::{Serialize, Deserialize};
 
 
@@ -10,12 +10,6 @@ pub struct CidrAnalyzerRequest {
     third_octet: u8,
     fourth_octet: u8,
     prefix_len: u8,
-}
-
-impl CidrAnalyzerRequest {
-    pub fn new(first_octet: u8, second_octet: u8, third_octet: u8, fourth_octet: u8, prefix_len: u8) -> Self {
-        CidrAnalyzerRequest { first_octet, second_octet, third_octet, fourth_octet, prefix_len }
-    }
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -59,6 +53,12 @@ pub fn parse(req: CidrAnalyzerRequest) -> Result<CidrAnalyzerResponse, String> {
 #[cfg(test)]
 mod tests {
     use crate::cidr_analyzer::{parse, CidrAnalyzerRequest};
+
+    impl CidrAnalyzerRequest {
+        pub fn new(first_octet: u8, second_octet: u8, third_octet: u8, fourth_octet: u8, prefix_len: u8) -> Self {
+            CidrAnalyzerRequest { first_octet, second_octet, third_octet, fourth_octet, prefix_len }
+        }
+    }
 
     #[test]
     fn test_run_success() {

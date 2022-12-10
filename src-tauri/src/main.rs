@@ -79,10 +79,10 @@ async fn command_cron_formatter(msg: CronMessage) -> Result<Vec<String>, String>
     let mut now = msg.now;
     let cron = msg.cron;
     let mut req: CronParserRequest;
-    for i in 0..msg.count {
+    for _i in 0..msg.count {
         req = cron_formatter::CronParserRequest::new(&cron, &now);
         let ret = cron_formatter::parse(req);
-        let res = match ret {
+        let _res = match ret {
             Ok(r) => {
                 result.push(String::from(r.get_next()));
                 now = String::from(r.get_next());

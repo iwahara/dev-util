@@ -1,4 +1,4 @@
-import { ReactNode, useState } from "react";
+import { ReactNode } from "react";
 import {
   Box,
   CloseButton,
@@ -7,7 +7,6 @@ import {
   Link,
   useColorModeValue,
   Text,
-  useDisclosure,
   BoxProps,
   FlexProps,
 } from "@chakra-ui/react";

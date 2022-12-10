@@ -3,6 +3,7 @@ use serde::{Serialize, Deserialize};
 #[derive(Debug, Serialize, Deserialize)]
 pub struct JsonFormatRequest {
     json_str: String,
+    pub is_minify: bool,
 }
 
 
@@ -12,28 +13,36 @@ pub struct JsonFormatResponse {
 }
 
 pub fn format(req: JsonFormatRequest) -> Result<JsonFormatResponse, String> {
-    let ret = jsonxf::pretty_print(req.json_str.as_str());
+    let ret = json_print(&req);
     let formatted = match ret {
         Ok(v) => v,
         Err(e) => return Err(format!("不正なJsonです。[{}]", e))
     };
     Ok(JsonFormatResponse { formatted_str: formatted })
 }
+fn json_print(req: &JsonFormatRequest) -> Result<String,String>{
+    if req.is_minify {
+        jsonxf::minimize(req.json_str.as_str())
+    }else {
+        jsonxf::pretty_print(req.json_str.as_str())
+    }
+}
+
 
 #[cfg(test)]
 mod tests {
     use crate::json_formatter::{format, JsonFormatRequest};
 
     impl JsonFormatRequest {
-        pub fn new(json_str: &str) -> Self {
-            JsonFormatRequest { json_str: String::from(json_str) }
+        pub fn new(json_str: &str, is_minify:bool) -> Self {
+            JsonFormatRequest { json_str: String::from(json_str),is_minify:is_minify }
         }
     }
 
     #[test]
     fn test_run_root_object() {
         let data = r#"{"name": "John Doe","age": 43}"#;
-        let req = JsonFormatRequest::new(data);
+        let req = JsonFormatRequest::new(data,false);
         let ret = format(req);
 
         assert_eq!(ret.unwrap().formatted_str, "{\n  \"name\": \"John Doe\",\n  \"age\": 43\n}");
@@ -42,9 +51,19 @@ mod tests {
     #[test]
     fn test_run_root_array() {
         let data = r#"[{"name": "John Doe","age": 43}]"#;
-        let req = JsonFormatRequest::new(data);
+        let req = JsonFormatRequest::new(data,false);
         let ret = format(req);
 
         assert_eq!(ret.unwrap().formatted_str, "[\n  {\n    \"name\": \"John Doe\",\n    \"age\": 43\n  }\n]");
+    }
+
+    #[test]
+    fn test_run_minify(){
+        let data = r#"[{"name": "John Doe","age": 43}]"#;
+        let req = JsonFormatRequest::new(data,true);
+        let ret = format(req);
+
+        assert_eq!(ret.unwrap().formatted_str, "[{\"name\":\"John Doe\",\"age\":43}]");
+
     }
 }
